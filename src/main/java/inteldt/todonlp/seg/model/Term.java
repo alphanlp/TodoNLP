@@ -1,7 +1,7 @@
 package inteldt.todonlp.seg.model;
 
-import inteldt.todonlp.manager.Config;
 import inteldt.todonlp.model.Nature;
+import inteldt.todonlp.seg.SegConfig;
 
 /**
  * 切分后的词
@@ -38,7 +38,7 @@ public class Term {
     @Override
     public String toString()
     {
-        if (Config.ShowTermNature)
+        if (SegConfig.ShowTermNature)
             return word + "/" + nature;
         return word;
     }

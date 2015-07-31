@@ -1,5 +1,6 @@
 package inteldt.todonlp.seg.model;
 
+import inteldt.todonlp.dictionary.CoreBiGramDictionary;
 import inteldt.todonlp.manager.Predefine;
 
 import java.util.Iterator;
@@ -84,8 +85,7 @@ public class WordNet {
      * @param line
      * @param vertex
      */
-    public void push(int line, Vertex vertex)
-    {
+    public void push(int line, Vertex vertex){
         Iterator<Vertex> iterator = vertexes[line].iterator();
         while (iterator.hasNext())
         {
@@ -148,8 +148,7 @@ public class WordNet {
      * @param line 行号
      * @return 一个数组
      */
-    public List<Vertex> get(int line)
-    {
+    public List<Vertex> get(int line){
         return vertexes[line];
     }
 
@@ -170,24 +169,22 @@ public class WordNet {
      * 获取节点个数
      * @return
      */
-    public int size()
-    {
+    public int size(){
         return size;
     }
     
     /**
-     * 从一个词到另一个词的词的花费
+     * 采用一元模型计算从一个词到另一个词的词的花费
      *
      * @param from 前面的词
      * @param to   后面的词
      * @return 分数
      */
-    public static double calculateUnigramWeight(Vertex current)
-    {
+    public static double calculateUnigramWeight(Vertex current){
         int frequency = current.getAttribute().totalFreq;
         if (frequency == 0) frequency = 1;  // 防止发生除零错误
 
-        double value = -Math.log(frequency / Predefine.MAX_FREQUENCY);
+        double value = -Math.log(frequency / Predefine.MAX_FREQUENCY + Predefine.dTemp);// 加上一个平滑因子
         if (value < 0.0)
         {// 理论情况下，是不应该小于0的啊，为什么加这个判断呢
             value = -value;
@@ -197,12 +194,33 @@ public class WordNet {
     }
     
     /**
+     * 采用二元模型计算从一个词到另一个词的词的花费
+     *
+     * @param from 前面的词
+     * @param to   后面的词
+     * @return 分数
+     */
+    public static double calculateBigramWeight(Vertex from, Vertex to){
+    	int frequency = from.getAttribute().totalFreq;
+        if (frequency == 0)  frequency = 1;  // 防止发生除零错误
+        
+        int nTwoWordsFreq = CoreBiGramDictionary.getBiGramFreq(from.wordId, to.wordId);
+        double value = -Math.log(Predefine.dSmoothingPara * frequency / (Predefine.MAX_FREQUENCY) + 
+        		(1 - Predefine.dSmoothingPara) * ((1 - Predefine.dTemp) * nTwoWordsFreq / frequency + Predefine.dTemp));
+//        if (value < 0.0)
+//        {// 理论情况下，是不应该小于0的啊，为什么加这个判断呢
+//            value = -value;
+//        }
+//      logger.info(String.format("%5s frequency:%6d, %s nTwoWordsFreq:%3d, weight:%.2f", from.word, frequency, from.word + "@" + to.word, nTwoWordsFreq, value));
+        return value;
+    }
+    
+    /**
      * 获取内部顶点表格，谨慎操作！
      *
      * @return
      */
-    public LinkedList<Vertex>[] getVertexes()
-    {
+    public LinkedList<Vertex>[] getVertexes(){
         return vertexes;
     }
     

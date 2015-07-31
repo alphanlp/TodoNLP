@@ -87,11 +87,11 @@ public class Predefine
     /**
      * Smoothing 平滑因子
      */
-    public static final double dTemp = (double) 1 / MAX_FREQUENCY + 0.00001;
+    public static final double dTemp = (double) 1 / MAX_FREQUENCY + 0.000001;
     /**
      * 平滑参数
      */
-    public static final double dSmoothingPara = 0.1;
+    public static final double dSmoothingPara = 0.15;
 
     public static int MAX_SENTENCE_LEN = 100;
 

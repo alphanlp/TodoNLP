@@ -10,7 +10,17 @@ import java.util.List;
  *
  */
 public abstract class Segment {
-	
+	/**分词器的配置*/
+	protected SegConfig segConfig = new SegConfig();
+
+	public SegConfig getSegConfig() {
+		return segConfig;
+	}
+
+	public void setSegConfig(SegConfig segConfig) {
+		this.segConfig = segConfig;
+	}
+
 	/**
 	 * 分词
 	 * @param text  文本

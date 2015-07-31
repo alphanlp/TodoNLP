@@ -14,7 +14,9 @@ public class Config {
     public static String CoreDictionaryPath = "resources/dictionary/CoreNatureDictionary.txt";
     
     /**
-     * 分词结果是否展示词性
+     * 2元语法词典路径
      */
-    public static boolean ShowTermNature = true;
+    public static String BigramDictionaryPath = "resources/dictionary/CoreNatureDictionary.ngram.txt";
+    
+   
 }

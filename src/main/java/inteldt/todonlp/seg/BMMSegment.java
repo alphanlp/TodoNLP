@@ -39,7 +39,7 @@ public class BMMSegment extends MechanicalSegment {
 			String candidate = sentence;
 			int index = 0;
 			for(; index < candidate.length(); index++){
-				CoreDictionary.Attribute attri = CoreDictionary.trie.search(candidate.substring(index));
+				CoreDictionary.Attribute attri = CoreDictionary.trie.getAttribute(candidate.substring(index));
 				if(attri != null){
 					list.add(new Term(candidate.substring(index),attri.natures[0]));
 					break;

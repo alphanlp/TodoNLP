@@ -20,7 +20,7 @@ public class TernaryTrie<V> implements Serializable {
 	private TernaryNode root;// 三叉树的根
 	public TernaryTrie<V> trie;// 词典三叉trie树
 	
-	private int size;// 词典大小
+	private static int size = 0;// 词典大小
 	
 	private class TernaryNode{
 		/**
@@ -38,6 +38,9 @@ public class TernaryTrie<V> implements Serializable {
 		TernaryNode lNode;
 		TernaryNode eNode;
 		TernaryNode rNode;
+		
+		/** 节点对应的ID，只在结束节点有，表示每个词的id */
+		int id = -1;
 		
 		/**
 		 * 是否是结束节点。结束节点为空节点。
@@ -59,7 +62,7 @@ public class TernaryTrie<V> implements Serializable {
 	}
 	
 	/**
-	 * 生成一颗词典Trie树
+	 * 生成一颗词典Trie树。
 	 */
 	public void generateTrie(List<Map.Entry<String, V>> words){		
 		if(words == null){
@@ -94,7 +97,7 @@ public class TernaryTrie<V> implements Serializable {
 					currentNode.isEnd = true;
 					TernaryNode node = currentNode;
 					node.attriValue = attriValue;
-					size++;// 词的大小+1
+					node.id = ++size;// trie中节点个数+1，并将该ID作为唯一id传给节点。
 					return;
 				}
 				if(currentNode.eNode == null){
@@ -156,12 +159,49 @@ public class TernaryTrie<V> implements Serializable {
 	}
 	
 	/**
+	 * 查找词的ID
+	 * 
+	 * @param wordStr
+	 * @return 如果wordStr存在trie中，返回该wordStr对应的ID；如果不存在，返回-1
+	 */
+	public int getID(String wordStr){
+		if(wordStr == null || "".equals(wordStr.trim())){
+			return -1;
+		}
+		
+		TernaryNode currentNode = root;
+		int charIndex = 0;
+		char cmpChar = wordStr.charAt(charIndex);
+		int charComp;
+		while(true){
+			if(currentNode == null){
+				return -1;
+			}
+			
+			charComp = cmpChar - currentNode.charValue;
+			if(charComp == 0){// 相等
+				charIndex ++;
+				if(charIndex == wordStr.length()){
+					return currentNode.isEnd ? currentNode.id : -1;
+				}else{
+					cmpChar = wordStr.charAt(charIndex);
+				}
+				currentNode = currentNode.eNode;
+			}else if(charComp < 0){// 小于
+				currentNode = currentNode.lNode;
+			}else{// 大于
+				currentNode = currentNode.rNode;
+			}
+		}
+	}
+	
+	/**
 	 * 精确查找词，并返回词的属性值。如果没有查找到词，则返回null
 	 * 
 	 * @param wordStr
 	 * @return
 	 */
-	public V search(String wordStr){
+	public V getAttribute(String wordStr){
 		if(wordStr == null || "".equals(wordStr.trim())){
 			return null;
 		}
@@ -183,6 +223,48 @@ public class TernaryTrie<V> implements Serializable {
 						TernaryNode node = new TernaryNode();
 						node.attriValue = currentNode.attriValue;
 						return node.attriValue;
+					}
+					return null;
+				}else{
+					cmpChar = wordStr.charAt(charIndex);
+				}
+				currentNode = currentNode.eNode;
+			}else if(charComp < 0){// 小于
+				currentNode = currentNode.lNode;
+			}else{// 大于
+				currentNode = currentNode.rNode;
+			}
+		}
+	}
+	
+	/**
+	 * 精确查找词，并返回词的属性值。如果没有查找到词，则返回null
+	 * 
+	 * @param wordStr
+	 * @return
+	 */
+	public Map.Entry<V, Integer> getAttributeAndID(String wordStr){
+		if(wordStr == null || "".equals(wordStr.trim())){
+			return null;
+		}
+
+		TernaryNode currentNode = root;
+		int charIndex = 0;
+		char cmpChar = wordStr.charAt(charIndex);
+		int charComp;
+		while(true){
+			if(currentNode == null){
+				return null;
+			}
+			
+			charComp = cmpChar - currentNode.charValue;
+			if(charComp == 0){// 相等
+				charIndex ++;
+				if(charIndex == wordStr.length()){
+					if(currentNode.isEnd){
+						TernaryNode node = new TernaryNode();
+						node.attriValue = currentNode.attriValue;
+						return new AbstractMap.SimpleEntry<V, Integer>(node.attriValue, node.id);
 					}
 					return null;
 				}else{
@@ -224,7 +306,7 @@ public class TernaryTrie<V> implements Serializable {
 					if(currentNode.isEnd){
 						list.add(new AbstractMap.SimpleEntry<String, V>(str, currentNode.attriValue));
 						if(currentNode.eNode != null){
-							getAllWord(currentNode.eNode, list, str + currentNode.eNode.charValue);// 获取该currentNode下对应所有可能的词
+							getSubWord(currentNode.eNode, list, str + currentNode.eNode.charValue);// 获取该currentNode下对应所有可能的词
 						}
 					}
 					return list;
@@ -240,26 +322,26 @@ public class TernaryTrie<V> implements Serializable {
 		}
 	}
 	
-	private void getAllWord(TernaryNode node, List<Map.Entry<String, V>> list, String str){
+	private void getSubWord(TernaryNode node, List<Map.Entry<String, V>> list, String str){
 		if(node.isEnd){ list.add(new AbstractMap.SimpleEntry<String, V>(str, node.attriValue));}
 
 		if(node.eNode != null){
-			getAllWord(node.eNode,list,(str == null ? "" : str) + node.eNode.charValue);
+			getSubWord(node.eNode,list,(str == null ? "" : str) + node.eNode.charValue);
 		}
 		
 		if(node.lNode != null){
 			if(str != null && str.length() > 0){
-				getAllWord(node.lNode, list, str.substring(0,str.length()-1) + node.lNode.charValue);
+				getSubWord(node.lNode, list, str.substring(0,str.length()-1) + node.lNode.charValue);
 			}else{
-				getAllWord(node.lNode, list, "" + node.lNode.charValue);
+				getSubWord(node.lNode, list, "" + node.lNode.charValue);
 			}
 			
 		}
 		if(node.rNode != null){
 			if(str != null && str.length() > 0){
-				getAllWord(node.rNode, list, str.substring(0,str.length()-1) + node.rNode.charValue);
+				getSubWord(node.rNode, list, str.substring(0,str.length()-1) + node.rNode.charValue);
 			}else{
-				getAllWord(node.rNode, list, "" + node.rNode.charValue);
+				getSubWord(node.rNode, list, "" + node.rNode.charValue);
 			}
 		}
 	}
@@ -269,7 +351,7 @@ public class TernaryTrie<V> implements Serializable {
 	 * @return
 	 */
 	public int size(){
-		return this.size;
+		return size;
 	}
 	
 	/**

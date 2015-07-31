@@ -27,7 +27,7 @@ public class FMMSegment extends MechanicalSegment {
 			String candidate = sentence;
 			int index = candidate.length() -1;
 			for(; index >= 0; index--){
-				CoreDictionary.Attribute attri = CoreDictionary.trie.search(candidate.substring(0,index+1));
+				CoreDictionary.Attribute attri = CoreDictionary.trie.getAttribute(candidate.substring(0,index+1));
 				if(attri != null){
 					list.add(new Term(candidate.substring(0,index+1),attri.natures[0]));
 					break;
