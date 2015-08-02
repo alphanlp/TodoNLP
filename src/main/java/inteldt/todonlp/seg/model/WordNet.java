@@ -1,6 +1,6 @@
 package inteldt.todonlp.seg.model;
 
-import inteldt.todonlp.dictionary.CoreBiGramDictionary;
+import inteldt.todonlp.dict.CoreBiGramDictionary;
 import inteldt.todonlp.manager.Predefine;
 
 import java.util.Iterator;

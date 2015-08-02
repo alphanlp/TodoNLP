@@ -31,4 +31,9 @@ public class SegConfig {
 		}
 		
 	}
+	
+	/**
+     * 词性标注
+     */
+    public boolean speechTag = true;
 }

@@ -1,6 +1,6 @@
 package inteldt.todonlp.seg.model;
 
-import inteldt.todonlp.dictionary.CoreDictionary;
+import inteldt.todonlp.dict.CoreDictionary;
 import inteldt.todonlp.manager.Predefine;
 import inteldt.todonlp.model.Nature;
 
@@ -105,6 +105,27 @@ public class Vertex {
 		}
 	}
 
+	/**
+     * 将属性的词性锁定为nature
+     *
+     * @param nature 词性
+     * @return 如果锁定词性在词性列表中，返回真，否则返回假
+     */
+    public boolean confirmNature(Nature nature)
+    {
+        if (attribute.natures.length == 1 && attribute.natures[0] == nature){
+            return true;
+        }
+        boolean result = true;
+        int frequency = attribute.getNatureFreq(nature);
+        if (frequency == 0){// 没有发现该词性，将词性的频次赋值为1000
+            frequency = 1000;
+            result = false;
+        }
+        attribute = new CoreDictionary.Attribute(nature, frequency);// 新建attribute，将词性锁定为nature
+        return result;
+    }
+	
 	@Override
 	public String toString() {
 		return realWord;

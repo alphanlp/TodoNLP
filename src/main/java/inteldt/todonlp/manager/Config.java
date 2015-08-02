@@ -18,5 +18,8 @@ public class Config {
      */
     public static String BigramDictionaryPath = "resources/dictionary/CoreNatureDictionary.ngram.txt";
     
-   
+    /**
+     * 核心词典词性转移矩阵路径
+     */
+    public static String CoreTransferMatrixDictionaryPath = "resources/dictionary/CoreNatureDictionary.tr.txt";
 }

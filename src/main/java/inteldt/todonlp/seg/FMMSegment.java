@@ -1,6 +1,6 @@
 package inteldt.todonlp.seg;
 
-import inteldt.todonlp.dictionary.CoreDictionary;
+import inteldt.todonlp.dict.CoreDictionary;
 import inteldt.todonlp.model.Nature;
 import inteldt.todonlp.seg.model.Term;
 import inteldt.todonlp.seg.model.Vertex;
