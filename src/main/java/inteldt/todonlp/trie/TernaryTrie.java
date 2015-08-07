@@ -20,7 +20,7 @@ public class TernaryTrie<V> implements Serializable {
 	private TernaryNode root;// 三叉树的根
 	public TernaryTrie<V> trie;// 词典三叉trie树
 	
-	private static int size = 0;// 词典大小
+	private int size = 0;// 词典大小
 	
 	private class TernaryNode{
 		/**
@@ -95,9 +95,8 @@ public class TernaryTrie<V> implements Serializable {
 				charIndex ++;
 				if(charIndex == wordStr.length()){
 					currentNode.isEnd = true;
-					TernaryNode node = currentNode;
-					node.attriValue = attriValue;
-					node.id = ++size;// trie中节点个数+1，并将该ID作为唯一id传给节点。
+					currentNode.attriValue = attriValue;
+					currentNode.id = ++size;// trie中节点个数+1，并将该ID作为唯一id传给节点。
 					return;
 				}
 				if(currentNode.eNode == null){
@@ -140,7 +139,6 @@ public class TernaryTrie<V> implements Serializable {
 			if(currentNode == null){
 				return false;
 			}
-			
 			charComp = cmpChar - currentNode.charValue;
 			if(charComp == 0){// 相等
 				charIndex ++;
@@ -157,6 +155,45 @@ public class TernaryTrie<V> implements Serializable {
 			}
 		}
 	}
+	
+	/**
+	 * 前缀查找，如果没有查找到该前缀，返回false；否则返回true
+	 * 
+	 * @param wordStr
+	 * @return
+	 */
+	public boolean preContains(String wordStr){
+		if(wordStr == null || "".equals(wordStr.trim())){
+			return false;
+		}
+
+		TernaryNode currentNode = root;
+		int charIndex = 0;
+		char cmpChar = wordStr.charAt(charIndex);
+		int charComp;
+		while(true){
+			if(currentNode == null){
+				return false;
+			}
+			
+			charComp = cmpChar - currentNode.charValue;
+			if(charComp == 0){// 相等
+				charIndex ++;
+				if(charIndex == wordStr.length()){
+					return true;
+				}else{
+					cmpChar = wordStr.charAt(charIndex);
+				}
+				currentNode = currentNode.eNode;
+			}else if(charComp < 0){// 小于
+				currentNode = currentNode.lNode;
+			}else{// 大于
+				currentNode = currentNode.rNode;
+			}
+		}
+	}
+	
+	
 	
 	/**
 	 * 查找词的ID
@@ -220,9 +257,7 @@ public class TernaryTrie<V> implements Serializable {
 				charIndex ++;
 				if(charIndex == wordStr.length()){
 					if(currentNode.isEnd){
-						TernaryNode node = new TernaryNode();
-						node.attriValue = currentNode.attriValue;
-						return node.attriValue;
+						return currentNode.attriValue;
 					}
 					return null;
 				}else{
@@ -262,9 +297,7 @@ public class TernaryTrie<V> implements Serializable {
 				charIndex ++;
 				if(charIndex == wordStr.length()){
 					if(currentNode.isEnd){
-						TernaryNode node = new TernaryNode();
-						node.attriValue = currentNode.attriValue;
-						return new AbstractMap.SimpleEntry<V, Integer>(node.attriValue, node.id);
+						return new AbstractMap.SimpleEntry<V, Integer>(currentNode.attriValue, currentNode.id);
 					}
 					return null;
 				}else{

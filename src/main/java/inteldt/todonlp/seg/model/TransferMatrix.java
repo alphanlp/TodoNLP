@@ -118,11 +118,11 @@ public class TransferMatrix<E extends Enum<E>>
            
             // 下面计算HMM四元组
             states = ordinaryArray;
-//            start_probability = new double[ordinaryMax];
-//            for (int s : states){
-//                double frequency = total[s] + 1e-8;
-//                start_probability[s] = -Math.log(frequency / totalFrequency);// 使用概率可能会存在浮点溢出的问题，所有取其log值，加负号边正，取最短路径
-//            }
+            start_probability = new double[ordinaryMax];
+            for (int s : states){
+                double frequency = total[s] + 1e-8;
+                start_probability[s] = -Math.log(frequency / totalFrequency); // 使用概率可能会存在浮点溢出的问题，所有取其log值，加负号边正，取最短路径
+            }
             transititon_probability = new double[ordinaryMax][ordinaryMax];
             for (int from : states){
                 for (int to : states)

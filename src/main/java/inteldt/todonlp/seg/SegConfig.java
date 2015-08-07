@@ -36,4 +36,9 @@ public class SegConfig {
      * 词性标注
      */
     public boolean speechTag = true;
+    
+    /**
+     * 是否加载用户词典
+     */
+    public boolean userCustomDictionary = true;
 }

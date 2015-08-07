@@ -27,10 +27,10 @@ public class Vertex {
 	 * 词的属性，谨慎修改属性内部的数据，因为会影响到字典<br>
 	 * 如果要修改，应当new一个Attribute
 	 */
-	public CoreDictionary.Attribute attribute;
+	public TrieAttribute attribute;
 
 	public Vertex(String word, String realWord,
-			CoreDictionary.Attribute attribute, int wordId) {
+			TrieAttribute attribute, int wordId) {
 		this.word = word;
 		this.realWord = realWord;
 		this.attribute = attribute;
@@ -54,7 +54,7 @@ public class Vertex {
 	 */
 	public static Vertex newBegin() {
 		return new Vertex(Predefine.TAG_BIGIN, " ",
-				new CoreDictionary.Attribute(Nature.begin,
+				new TrieAttribute(Nature.begin,
 						Predefine.MAX_FREQUENCY / 10),
 				CoreDictionary.trie.getID(Predefine.TAG_BIGIN));
 	}
@@ -65,7 +65,7 @@ public class Vertex {
 	 * @return
 	 */
 	public static Vertex newEnd() {
-		return new Vertex(Predefine.TAG_END, " ", new CoreDictionary.Attribute(
+		return new Vertex(Predefine.TAG_END, " ", new TrieAttribute(
 				Nature.end, Predefine.MAX_FREQUENCY / 10),
 				CoreDictionary.trie.getID(Predefine.TAG_END));
 	}
@@ -75,7 +75,7 @@ public class Vertex {
 	 * 
 	 * @return
 	 */
-	public CoreDictionary.Attribute getAttribute() {
+	public TrieAttribute getAttribute() {
 		return attribute;
 	}
 
@@ -122,7 +122,7 @@ public class Vertex {
             frequency = 1000;
             result = false;
         }
-        attribute = new CoreDictionary.Attribute(nature, frequency);// 新建attribute，将词性锁定为nature
+        attribute = new TrieAttribute(nature, frequency);// 新建attribute，将词性锁定为nature
         return result;
     }
 	

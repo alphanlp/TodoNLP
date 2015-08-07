@@ -3,7 +3,7 @@ package inteldt.todonlp.seg;
 import inteldt.todonlp.dict.CoreDictionary;
 import inteldt.todonlp.model.Nature;
 import inteldt.todonlp.seg.model.Term;
-import inteldt.todonlp.seg.model.Vertex;
+import inteldt.todonlp.seg.model.TrieAttribute;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +39,7 @@ public class BMMSegment extends MechanicalSegment {
 			String candidate = sentence;
 			int index = 0;
 			for(; index < candidate.length(); index++){
-				CoreDictionary.Attribute attri = CoreDictionary.trie.getAttribute(candidate.substring(index));
+				TrieAttribute attri = CoreDictionary.trie.getAttribute(candidate.substring(index));
 				if(attri != null){
 					list.add(new Term(candidate.substring(index),attri.natures[0]));
 					break;

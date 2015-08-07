@@ -8,18 +8,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * n元分词，viterbi算法求解
+ * N元分词，viterbi算法求解
  * @author pei
  *
  */
 public class ViterbiSegment extends LinguisticSegment{
 
+	/**
+	 * 找时间把权重全部打印出来看看，计算过程中所有的权重
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		//test
 		ViterbiSegment seg = new ViterbiSegment();		
-//		List<Term> terms = seg.segSentence("在自然语言处理中，我们经常需要用到语法模型");
-		List<Term> terms = seg.segSentence("");
-		System.out.println(terms);
+//		List<Term> terms = seg.segSentence("月花费1806元，汉兰达2.0T车型用车成本");
+		List<Term> terms = seg.segSentence("把你的爱给他，他会爱你");
+		System.out.println("隐马标注：" + terms);
 	}
 	
 	@Override
@@ -27,7 +31,7 @@ public class ViterbiSegment extends LinguisticSegment{
 		// 生成词网
 		WordNet wordnet = generateWordNet(sentence);
 		
-		System.out.println(wordnet.toString());
+		System.out.println("原子切分词网：\n" + wordnet.toString());
 		
 		//求解
 		List<Vertex> vertexList = null;
@@ -37,10 +41,26 @@ public class ViterbiSegment extends LinguisticSegment{
 			vertexList = unigramByviterbi(wordnet);
 		}
 		
+//		for(Vertex vertex : vertexList){
+//			for(Nature nature : vertex.attribute.natures){
+//				System.out.print(vertex.realWord + "  " + nature + "  ");
+//			}
+//			System.out.println();
+//		}
+		
+		System.out.println("粗切分：" + convert(vertexList));
+		
 		if(segConfig.speechTag){
 			speechTag(vertexList);// 隐马词性标注
 		}
 		
+//		for(Vertex vertex : vertexList){
+//			for(Nature nature : vertex.attribute.natures){
+//				System.out.print(vertex.realWord + "  " + nature + "  ");
+//			}
+//			System.out.println();
+//		}
+
 		return convert(vertexList);
 	}
 	

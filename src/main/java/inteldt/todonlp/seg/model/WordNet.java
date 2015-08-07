@@ -1,7 +1,9 @@
 package inteldt.todonlp.seg.model;
 
+import static inteldt.todonlp.manager.Predefine.logger;
 import inteldt.todonlp.dict.CoreBiGramDictionary;
 import inteldt.todonlp.manager.Predefine;
+import inteldt.todonlp.model.Nature;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,7 +11,7 @@ import java.util.List;
 
 /**
  * 词网，根据字符在句子的先后顺序索引。
- * @author lenovo
+ * @author pei
  *
  */
 public class WordNet {
@@ -56,13 +58,17 @@ public class WordNet {
      * @param vertex 顶点
      */
     public void add(int line, Vertex vertex){
-        for (Vertex oldVertex : vertexes[line])
-        {
+        for (Vertex oldVertex : vertexes[line]){
             // 保证唯一性
             if (oldVertex.realWord.length() == vertex.realWord.length()) return;
         }
         vertexes[line].add(vertex);
         ++size;// 节点+1
+    }
+    
+    public void clear(int line){
+        vertexes[line].removeAll(vertexes[line]);
+        --size;// 节点+1
     }
     
     /**
@@ -72,8 +78,7 @@ public class WordNet {
      */
     public void addAll(List<Vertex> vertexList){
         int i = 0;
-        for (Vertex vertex : vertexList)
-        {
+        for (Vertex vertex : vertexList){
             add(i, vertex);
             i += vertex.realWord.length();
         }
@@ -87,10 +92,8 @@ public class WordNet {
      */
     public void push(int line, Vertex vertex){
         Iterator<Vertex> iterator = vertexes[line].iterator();
-        while (iterator.hasNext())
-        {
-            if (iterator.next().realWord.length() == vertex.realWord.length())
-            {
+        while (iterator.hasNext()){
+            if (iterator.next().realWord.length() == vertex.realWord.length()){
                 iterator.remove();
                 --size;
                 break;
@@ -100,47 +103,20 @@ public class WordNet {
         ++size;
     }
     
-//    /**
-//     * 添加顶点，由原子分词顶点添加
-//     *
-//     * @param line
-//     * @param atomSegment
-//     */
-//    public void add(int line, List<AtomNode> atomSegment)
-//    {
-//        // 将原子部分存入m_segGraph
-//        int offset = 0;
-//        for (AtomNode atomNode : atomSegment)//Init the cost array
-//        {
-//            String sWord = atomNode.sWord;//init the word
-//            Nature nature = Nature.n;
-//            switch (atomNode.nPOS)
-//            {
-//                case Predefine.CT_CHINESE:
-//                    break;
-//                case Predefine.CT_INDEX:
-//                case Predefine.CT_NUM:
-//                    nature = Nature.m;
-//                    sWord = "未##数";
-//                    break;
-//                case Predefine.CT_DELIMITER:
-//                    nature = Nature.w;
-//                    break;
-//                case Predefine.CT_LETTER:
-//                    nature = Nature.nx;
-//                    sWord = "未##串";
-//                    break;
-//                case Predefine.CT_SINGLE://12021-2129-3121
-//                    nature = Nature.nx;
-//                    sWord = "未##串";
-//                    break;
-//                default:
-//                    break;
-//            }
-//            add(line + offset, new Vertex(sWord, atomNode.sWord, new CoreDictionary.Attribute(nature, 1)));
-//            offset += atomNode.sWord.length();
-//        }
-//    }
+    /**
+     * 添加顶点，由原子分词顶点添加
+     *
+     * @param line
+     * @param atomSegment
+     */
+    public void add(int line, List<AtomNode> atomSegment){
+        int offset = 0;
+        for (AtomNode atomNode : atomSegment){
+            Nature nature = atomNode.getNature();// 词典未识别字串，根据字符类型，获取预设的词性
+            add(line + offset, new Vertex(atomNode.sWord, atomNode.sWord, new TrieAttribute(nature, 1), -1));
+            offset += atomNode.sWord.length();
+        }
+    }
     
     /**
      * 获取某一行的所有节点
@@ -161,7 +137,6 @@ public class WordNet {
     public Vertex getFirst(int line){
         Iterator<Vertex> iterator = vertexes[line].iterator();
         if (iterator.hasNext()) return iterator.next();
-
         return null;
     }
 
@@ -201,16 +176,17 @@ public class WordNet {
      * @return 分数
      */
     public static double calculateBigramWeight(Vertex from, Vertex to){
-    	int frequency = from.getAttribute().totalFreq;
-        if (frequency == 0)  frequency = 1;  // 防止发生除零错误
+    	int frequency = from.getAttribute().totalFreq + 1; // +1 做平滑
+//        if (frequency == 0)  frequency = 1;  // 防止发生除零错误
         
-        int nTwoWordsFreq = CoreBiGramDictionary.getBiGramFreq(from.wordId, to.wordId);
+        double nTwoWordsFreq = CoreBiGramDictionary.getBiGramFreq(from.wordId, to.wordId) + 0.001;// 做一个平滑
         double value = -Math.log(Predefine.dSmoothingPara * frequency / (Predefine.MAX_FREQUENCY) + 
-        		(1 - Predefine.dSmoothingPara) * ((1 - Predefine.dTemp) * nTwoWordsFreq / frequency + Predefine.dTemp));
-//        if (value < 0.0)
-//        {// 理论情况下，是不应该小于0的啊，为什么加这个判断呢
-//            value = -value;
-//        }
+        		(1 - Predefine.dSmoothingPara) * ((1 - Predefine.dTemp) * nTwoWordsFreq / frequency + Predefine.dTemp));  // 权重计算公式，有做平滑
+        if (value < 0.0)
+        {// 理论情况下，是不应该小于0的啊，以防意外，出现，给予警告提示
+            value = -value;
+            logger.warning("警告：计算"+from.realWord + "@" + to.realWord +"的权重出现小于0");
+        }
 //      logger.info(String.format("%5s frequency:%6d, %s nTwoWordsFreq:%3d, weight:%.2f", from.word, frequency, from.word + "@" + to.word, nTwoWordsFreq, value));
         return value;
     }

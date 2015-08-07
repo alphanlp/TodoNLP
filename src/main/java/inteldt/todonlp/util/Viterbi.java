@@ -116,16 +116,20 @@ public class Viterbi{
             double perfect_cost_line = Double.MAX_VALUE;
             int k = 0;// curTagSet的cost对应的下标
             Nature[] curTagSet = item.attribute.natures;
-            for (Nature cur : curTagSet){// 选择当前阶段，的一个词性
+            for (Nature cur : curTagSet)
+            {// 选择当前阶段，的一个词性
                 cost[index_i][k] = Double.MAX_VALUE;
                 int j = 0;// preTagSet的cost对应的下标
-                for (Nature p : preTagSet){
+                for (Nature p : preTagSet)
+                {
                     double now = cost[index_i_1][j] + 
                     		transferMatrix.transititon_probability[p.ordinal()][cur.ordinal()] - // 转移概率 计算公式：p(ti|ti-1) = count(ti-1-->ti)/count(ti-1)
                     		Math.log((item.attribute.freqs[k] + 1e-8) / transferMatrix.getTotalFrequency(cur));//发射概率 计算公式：count(word1.naturei) / count(naturei)
-                    if (now < cost[index_i][k]) {
+                    if (now < cost[index_i][k]) 
+                    {
                         cost[index_i][k] = now;
-                        if (now < perfect_cost_line){
+                        if (now < perfect_cost_line)
+                        {
                             perfect_cost_line = now;
                             pre = p;
                         }

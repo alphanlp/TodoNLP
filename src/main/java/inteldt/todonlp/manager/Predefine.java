@@ -23,13 +23,6 @@ public class Predefine
     public final static double MIN_PROBABILITY = 1e-10;
     public final static int CT_SENTENCE_BEGIN = 1;        //Sentence begin
     public final static int CT_SENTENCE_END = 4;          //Sentence ending
-    public final static int CT_SINGLE = 5;                //SINGLE byte
-    public final static int CT_DELIMITER = CT_SINGLE + 1; //delimiter
-    public final static int CT_CHINESE = CT_SINGLE + 2;   //Chinese Char
-    public final static int CT_LETTER = CT_SINGLE + 3;    //HanYu Pinyin
-    public final static int CT_NUM = CT_SINGLE + 4;       //HanYu Pinyin
-    public final static int CT_INDEX = CT_SINGLE + 5;     //HanYu Pinyin
-    public final static int CT_OTHER = CT_SINGLE + 12;    //Other
     /**
      * 浮点数正则
      */

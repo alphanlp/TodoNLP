@@ -22,4 +22,14 @@ public class Config {
      * 核心词典词性转移矩阵路径
      */
     public static String CoreTransferMatrixDictionaryPath = "resources/dictionary/CoreNatureDictionary.tr.txt";
+    
+    /**
+     * 字符类型对应表
+     */
+    public static String CharTypePath = "resources/dictionary/other/CharType.dat.yes";
+    
+    /**
+     * 用户自定义词典路径
+     */
+    public static String CustomDictionaryPath = "resources/dictionary/custom/CustomDictionary.txt";
 }
