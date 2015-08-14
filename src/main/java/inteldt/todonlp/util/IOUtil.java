@@ -289,11 +289,11 @@ public class IOUtil
             }
             catch (FileNotFoundException e)
             {
-                logger.warning("文件" + path + "不存在，接下来的调用会返回null" + TextUtility.exceptionToString(e));
+                logger.warning("文件" + path + "不存在，接下来的调用会返回null" + CharUtility.exceptionToString(e));
             }
             catch (IOException e)
             {
-                logger.warning("在读取过程中发生错误" + TextUtility.exceptionToString(e));
+                logger.warning("在读取过程中发生错误" + CharUtility.exceptionToString(e));
             }
         }
 
@@ -307,7 +307,7 @@ public class IOUtil
             }
             catch (IOException e)
             {
-                logger.warning("关闭文件失败" + TextUtility.exceptionToString(e));
+                logger.warning("关闭文件失败" + CharUtility.exceptionToString(e));
             }
             return;
         }
@@ -325,7 +325,7 @@ public class IOUtil
                 }
                 catch (IOException e)
                 {
-                    logger.warning("关闭文件失败" + TextUtility.exceptionToString(e));
+                    logger.warning("关闭文件失败" + CharUtility.exceptionToString(e));
                 }
                 return false;
             }
@@ -351,7 +351,7 @@ public class IOUtil
                         }
                         catch (IOException e)
                         {
-                            logger.warning("关闭文件失败" + TextUtility.exceptionToString(e));
+                            logger.warning("关闭文件失败" + CharUtility.exceptionToString(e));
                         }
                     }
                 }
@@ -362,7 +362,7 @@ public class IOUtil
             }
             catch (IOException e)
             {
-                logger.warning("在读取过程中发生错误" + TextUtility.exceptionToString(e));
+                logger.warning("在读取过程中发生错误" + CharUtility.exceptionToString(e));
             }
             return preLine;
         }

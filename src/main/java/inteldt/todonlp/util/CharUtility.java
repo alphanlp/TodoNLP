@@ -10,43 +10,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * 文本工具类
  */
-public class TextUtility
-{
-
-    /**
-     * 单字节
-     */
-    public static final int CT_SINGLE = 5;// SINGLE byte
-
-    /**
-     * 分隔符"!,.?()[]{}+=
-     */
-    public static final int CT_DELIMITER = CT_SINGLE + 1;// delimiter
-
-    /**
-     * 中文字符
-     */
-    public static final int CT_CHINESE = CT_SINGLE + 2;// Chinese Char
-
-    /**
-     * 字母
-     */
-    public static final int CT_LETTER = CT_SINGLE + 3;// HanYu Pinyin
-
-    /**
-     * 数字
-     */
-    public static final int CT_NUM = CT_SINGLE + 4;// HanYu Pinyin
-
-    /**
-     * 序号
-     */
-    public static final int CT_INDEX = CT_SINGLE + 5;// HanYu Pinyin
-
-    /**
-     * 其他
-     */
-    public static final int CT_OTHER = CT_SINGLE + 12;// Other
+public class CharUtility{
 
     public static int charType(char c)
     {
@@ -62,7 +26,7 @@ public class TextUtility
     {
         if (str != null && str.length() > 0)
         {
-            if ("零○〇一二两三四五六七八九十廿百千万亿壹贰叁肆伍陆柒捌玖拾佰仟".contains(str)) return CT_NUM;
+            if ("零○〇一二两三四五六七八九十廿百千万亿壹贰叁肆伍陆柒捌玖拾佰仟".contains(str)) return CharType.CT_NUM;
             byte[] b;
             try
             {
@@ -80,26 +44,26 @@ public class TextUtility
             if (ub1 < 128)
             {
                 if (" *\"!,.?()[]{}+=/\\;:|".indexOf((char) b1) != -1)
-                    return CT_DELIMITER;
+                    return CharType.CT_DELIMITER;
                 if ("0123456789".indexOf((char)b1) != -1)
-                    return CT_NUM;
-                return CT_SINGLE;
+                    return CharType.CT_NUM;
+                return CharType.CT_SINGLE;
             }
             else if (ub1 == 162)
-                return CT_INDEX;
+                return CharType.CT_INDEX;
             else if (ub1 == 163 && ub2 > 175 && ub2 < 186)
-                return CT_NUM;
+                return CharType.CT_NUM;
             else if (ub1 == 163
                     && (ub2 >= 193 && ub2 <= 218 || ub2 >= 225
                     && ub2 <= 250))
-                return CT_LETTER;
+                return CharType.CT_LETTER;
             else if (ub1 == 161 || ub1 == 163)
-                return CT_DELIMITER;
+                return CharType.CT_DELIMITER;
             else if (ub1 >= 176 && ub1 <= 247)
-                return CT_CHINESE;
+                return CharType.CT_CHINESE;
 
         }
-        return CT_OTHER;
+        return CharType.CT_OTHER;
     }
 
     /**

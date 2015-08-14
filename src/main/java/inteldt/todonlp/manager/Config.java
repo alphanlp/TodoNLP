@@ -8,6 +8,11 @@ package inteldt.todonlp.manager;
  *
  */
 public class Config {
+	 /**
+     * 开发模式
+     */
+    public static boolean DEBUG = true;
+	
 	/**
      * 核心词典路径。词典每一行由词和词性组成，一行格式为：词  词性1 词性频率1 词性2 词性频率2
      */

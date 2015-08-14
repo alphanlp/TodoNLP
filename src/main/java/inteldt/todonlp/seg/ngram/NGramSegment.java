@@ -1,8 +1,9 @@
-package inteldt.todonlp.seg;
+package inteldt.todonlp.seg.ngram;
 
 import inteldt.todonlp.dict.CoreDictionary;
 import inteldt.todonlp.dict.CoreTransferMatrixDictionary;
 import inteldt.todonlp.dict.UserCustomDictionary;
+import inteldt.todonlp.seg.Segment;
 import inteldt.todonlp.seg.model.AtomNode;
 import inteldt.todonlp.seg.model.Term;
 import inteldt.todonlp.seg.model.TrieAttribute;
@@ -23,7 +24,7 @@ import java.util.Map;
  * @author pei
  * 
  */
-public abstract class LinguisticSegment extends Segment {
+public abstract class NGramSegment extends Segment {
 
 	/**
 	 * 根据初始化的wordnet对象生成语言模型词网。
@@ -46,7 +47,7 @@ public abstract class LinguisticSegment extends Segment {
 					wordnet.add(index + 1, new Vertex(candidate, candidate, entry.getKey(), entry.getValue()));
 				}else
 				{
-					if(segConfig.userCustomDictionary){// 用户自定义词典
+					if(segConfig.isUseCustomDictionary){// 用户自定义词典
 						TrieAttribute attri = UserCustomDictionary.trie.getAttribute(candidate);
 						if (attri != null) {// index+1，因为0的位置被开始节点占领
 							wordnet.add(index + 1, new Vertex(candidate, candidate, attri, -1));
@@ -61,7 +62,7 @@ public abstract class LinguisticSegment extends Segment {
 					}
 					if(!CoreDictionary.trie.preContains(candidate))
 					{
-						if(segConfig.userCustomDictionary)
+						if(segConfig.isUseCustomDictionary)
 						{
 							pos++;
 							while(index + pos <= wordnet.sentence.length())
@@ -167,8 +168,7 @@ public abstract class LinguisticSegment extends Segment {
      * @param offsetEnabled 是否计算offset，词在句子中的起始位置
      * @return
      */
-    protected static List<Term> convert(List<Vertex> vertexList, boolean offsetEnabled)
-    {
+    protected static List<Term> convert(List<Vertex> vertexList, boolean offsetEnabled){
         assert vertexList != null;
         assert vertexList.size() >= 2 : "这条路径不应当短于2" + vertexList.toString();// 空字符串时为2，因为增加了begin和end两个节点
         int length = vertexList.size() - 2;
@@ -218,11 +218,43 @@ public abstract class LinguisticSegment extends Segment {
     protected static void speechTag(List<Vertex> vertexList){
     	Viterbi.compute(vertexList, CoreTransferMatrixDictionary.transformMatrix);
     }
+	
+	/**
+	 * 求解语言模型的最优切分
+	 * @param wordnet
+	 * @return
+	 */
+	protected List<Vertex> optimSeg(WordNet wordnet){
+		// 避免生成对象，优化速度
+        LinkedList<Vertex>[] nodes = wordnet.getVertexes();
+        LinkedList<Vertex> vertexList = new LinkedList<Vertex>();// 存放粗分结果的
+        for (Vertex node : nodes[1])
+        {
+        	updateFrom(node,nodes[0].getFirst());// nodes[0].getFirst() 到 node的权重，也就是路径的权重
+        }
     
-	public static void main(String[] args) {
-		// LinguisticSegment seg = new LinguisticSegment();
-		// WordNet wordnet= seg.generateWordNet("我们的世界");
-		// System.out.println(wordnet);
+        for (int i = 1; i < nodes.length - 1; ++i)
+        {
+            LinkedList<Vertex> nodeArray = nodes[i];
+            if (nodeArray == null) continue;
+            for (Vertex node : nodeArray)
+            {
+                if (node.from == null) continue;
+                for (Vertex to : nodes[i + node.realWord.length()])
+                {
+                	updateFrom(to,node);
+                }
+            }
+        }
+        
+        Vertex from = nodes[nodes.length - 1].getFirst();
+        while (from != null)
+        {
+            vertexList.addFirst(from);
+            from = from.from;
+        }
+        return vertexList;
 	}
 
+	protected abstract void updateFrom(Vertex to,Vertex from);
 }

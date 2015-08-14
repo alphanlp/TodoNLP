@@ -36,11 +36,11 @@ public class Term {
     }
 
     @Override
-    public String toString()
+    public String toString()// TODO
     {
-        if (SegConfig.ShowTermNature)
+//        if (true)
             return word + "/" + nature;
-        return word;
+//        return word;
     }
 
     /**

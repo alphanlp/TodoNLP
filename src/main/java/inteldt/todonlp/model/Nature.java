@@ -2,7 +2,7 @@ package inteldt.todonlp.model;
 /**
  * 词性
  * 
- * @author lenovo
+ * @author pei
  *
  */
 public enum Nature {

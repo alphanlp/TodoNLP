@@ -1,8 +1,13 @@
 package inteldt.todonlp.seg;
 
+import inteldt.todonlp.dict.CoreDictionary;
 import inteldt.todonlp.seg.model.Term;
+import inteldt.todonlp.util.SentenceDetect;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 分词器的基类
@@ -10,80 +15,15 @@ import java.util.List;
  *
  */
 public abstract class Segment {
+	
 	/**分词器的配置*/
 	protected SegConfig segConfig = new SegConfig();
-
-	public SegConfig getSegConfig() {
-		return segConfig;
-	}
-
-	public void setSegConfig(SegConfig segConfig) {
-		this.segConfig = segConfig;
-	}
-
 	/**
 	 * 分词
 	 * @param text  文本
 	 * @return 
 	 */
 	public List<Term> seg(String text){
-//        if (HanLP.Config.Normalization)
-//        {
-//            CharTable.normalization(charArray);
-//        }
-//        if (Config.threadNumber > 1 && charArray.length > 10000)    // 小文本多线程没意义，反而变慢了
-//        {
-//            List<String> sentenceList = SentencesUtil.toSentenceList(charArray);
-//            String[] sentenceArray = new String[sentenceList.size()];
-//            sentenceList.toArray(sentenceArray);
-//            //noinspection unchecked
-//            List<Term>[] termListArray = new List[sentenceArray.length];
-//            final int per = sentenceArray.length / config.threadNumber;
-//            WorkThread[] threadArray = new WorkThread[config.threadNumber];
-//            for (int i = 0; i < config.threadNumber - 1; ++i)
-//            {
-//                int from = i * per;
-//                threadArray[i] = new WorkThread(sentenceArray, termListArray, from, from + per);
-//                threadArray[i].start();
-//            }
-//            threadArray[config.threadNumber - 1] = new WorkThread(sentenceArray, termListArray, (config.threadNumber - 1) * per, sentenceArray.length);
-//            threadArray[config.threadNumber - 1].start();
-//            try
-//            {
-//                for (WorkThread thread : threadArray)
-//                {
-//                    thread.join();
-//                }
-//            }
-//            catch (InterruptedException e)
-//            {
-//                logger.severe("线程同步异常：" + TextUtility.exceptionToString(e));
-//                return Collections.emptyList();
-//            }
-//            List<Term> termList = new LinkedList<Term>();
-//            if (config.offset || config.indexMode)  // 由于分割了句子，所以需要重新校正offset
-//            {
-//                int sentenceOffset = 0;
-//                for (int i = 0; i < sentenceArray.length; ++i)
-//                {
-//                    for (Term term : termListArray[i])
-//                    {
-//                        term.offset += sentenceOffset;
-//                        termList.add(term);
-//                    }
-//                    sentenceOffset += sentenceArray[i].length();
-//                }
-//            }
-//            else
-//            {
-//                for (List<Term> list : termListArray)
-//                {
-//                    termList.addAll(list);
-//                }
-//            }
-//
-//            return termList;
-//        }
         return segSentence(text);
     }
 	
@@ -110,5 +50,26 @@ public abstract class Segment {
      * @return 单词列表
      */
     protected abstract List<Term> segSentence(String sentence);
+    
+    public List<List<Term>> seg2sentence(String text){
+        List<List<Term>> resultList = new LinkedList<List<Term>>();
+        {
+            for (String sentence : SentenceDetect.toSentenceList(text))
+            {
+                resultList.add(segSentence(sentence));
+            }
+        }
 
+        return resultList;
+    }
+
+    
+    /**
+     * 是否启用用户词典
+     *
+     * @param enable
+     */
+    public void enableCustomDictionary(boolean enable){
+    	segConfig.isUseCustomDictionary = enable;
+    }
 }

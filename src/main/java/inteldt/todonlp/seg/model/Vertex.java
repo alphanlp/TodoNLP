@@ -128,7 +128,7 @@ public class Vertex {
 	
 	@Override
 	public String toString() {
-		return realWord;
+		return realWord + "/" +attribute.natures[0];
 		// return "WordNode{" +
 		// "word='" + word + '\'' +
 		// (word.equals(realWord) ? "" : (", realWord='" + realWord + '\'')) +

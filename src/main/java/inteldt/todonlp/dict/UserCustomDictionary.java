@@ -21,7 +21,6 @@ import java.util.logging.Level;
 public class UserCustomDictionary {
 	
 	public static void main(String[] args) {
-//		new UserCustomDictionary();
 		String candidate = "月花费1806元，汉兰达2.0T车型用车成本".substring(18);
 		System.out.println(candidate);
 		Map.Entry<TrieAttribute, Integer> attri = UserCustomDictionary.trie.getAttributeAndID(candidate);
@@ -30,7 +29,6 @@ public class UserCustomDictionary {
 		}else{
 			System.out.println("false");
 		}
-//		一个心眼儿 nz 1
 	}
 	/**
 	 * Trie树，词典的组织结构

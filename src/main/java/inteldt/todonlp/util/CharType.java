@@ -12,37 +12,37 @@ public class CharType{
     /**
      * 单字节
      */
-    public static final byte CT_SINGLE = 5;
+    public static final byte CT_SINGLE = 5; // SINGLE byte
 
     /**
      * 分隔符"!,.?()[]{}+=
      */
-    public static final byte CT_DELIMITER = CT_SINGLE + 1;
+    public static final byte CT_DELIMITER = CT_SINGLE + 1;// delimiter
 
     /**
      * 中文字符
      */
-    public static final byte CT_CHINESE = CT_SINGLE + 2;
+    public static final byte CT_CHINESE = CT_SINGLE + 2;// Chinese Char
 
     /**
      * 字母
      */
-    public static final byte CT_LETTER = CT_SINGLE + 3;
+    public static final byte CT_LETTER = CT_SINGLE + 3;// Pinyin
 
     /**
      * 数字
      */
-    public static final byte CT_NUM = CT_SINGLE + 4;
+    public static final byte CT_NUM = CT_SINGLE + 4;// number
 
     /**
      * 序号
      */
-    public static final byte CT_INDEX = CT_SINGLE + 5;
+    public static final byte CT_INDEX = CT_SINGLE + 5;// xu hao
 
     /**
      * 其他
      */
-    public static final byte CT_OTHER = CT_SINGLE + 12;
+    public static final byte CT_OTHER = CT_SINGLE + 12;// Other
     
     static byte[] type;
 

@@ -1,4 +1,4 @@
-package inteldt.todonlp.seg;
+package inteldt.todonlp.seg.mechanical;
 
 import inteldt.todonlp.dict.CoreDictionary;
 import inteldt.todonlp.model.Nature;
