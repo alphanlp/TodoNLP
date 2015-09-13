@@ -37,4 +37,14 @@ public class Config {
      * 用户自定义词典路径
      */
     public static String CustomDictionaryPath = "resources/dictionary/custom/CustomDictionary.txt";
+   
+    /**
+     * CRF分词模型
+     */
+    public static String CRFSegmentModelPath = "resources/model/segment/CRFSegmentModel.txt";
+    
+    /**
+     * 字符正规化表（全角转半角，繁体转简体）
+     */
+    public static String CharTablePath = "resources/dictionary/other/CharTable.bin.yes";
 }

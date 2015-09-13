@@ -60,6 +60,7 @@ public abstract class NGramSegment extends Segment {
 							
 						}
 					}
+					
 					if(!CoreDictionary.trie.preContains(candidate))
 					{
 						if(segConfig.isUseCustomDictionary)

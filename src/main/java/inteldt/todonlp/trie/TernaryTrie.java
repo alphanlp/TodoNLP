@@ -74,7 +74,7 @@ public class TernaryTrie<V> implements Serializable {
 		for(Map.Entry<String, V> word : words){
 			trie.insert(word.getKey(),word.getValue());
 		}
-		System.out.println("词典加载完成，共耗时：" + (System.currentTimeMillis() - start) + "毫秒");
+		System.out.println("Trie生成完毕，共耗时：" + (System.currentTimeMillis() - start) + "毫秒");
 	}
 	
 	/**

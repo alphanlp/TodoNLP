@@ -6,8 +6,5 @@ package inteldt.todonlp.manager;
  *
  */
 public class InteldtLP {
-	
-	
-	
 
 }
